@@ -37,7 +37,6 @@ public class Demo3 {
         conf.setDebug(false);
         if (args != null && args.length > 0) {
             conf.setNumWorkers(4);
-            conf.setMaxTaskParallelism(1);
             StormSubmitter.submitTopologyWithProgressBar(args[0], conf, topology);
         } else {
             LocalCluster cluster = new LocalCluster();
