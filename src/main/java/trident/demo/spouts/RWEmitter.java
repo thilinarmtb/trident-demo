@@ -1,48 +1,56 @@
 package trident.demo.spouts;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import backtype.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import storm.trident.operation.TridentCollector;
 import storm.trident.spout.ITridentSpout;
 import storm.trident.topology.TransactionAttempt;
-import backtype.storm.tuple.Values;
 
-public class RWEmitter implements ITridentSpout.Emitter<Long>, Serializable {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class RWEmitter implements ITridentSpout.Emitter<List<Long>>, Serializable {
     private static final long serialVersionUID = 1L;
+    private static final long N = 50;
 
-    private Map<Long, List<List<Object>>> dataStore = new HashMap<Long, List<List<Object>>>();
+    List<List<Object>> batchA = new ArrayList<List<Object>>() {{
+        add(new Values("apple"));
+        add(new Values("ball"));
+        add(new Values("cat"));
+        add(new Values("dog"));
+    }};
+
+    List<List<Object>> batchB = new ArrayList<List<Object>>() {{
+        add(new Values("a"));
+        add(new Values("b"));
+        add(new Values("c"));
+        add(new Values("d"));
+    }};
 
     private static final Logger LOG = LoggerFactory.getLogger(RWEmitter.class);
 
     @Override
-    public void emitBatch(TransactionAttempt transactionAttempt, Long aLong, TridentCollector tridentCollector) {
-        List<List<Object>> batch = dataStore.get(transactionAttempt.getTransactionId());
+    public void emitBatch(TransactionAttempt transactionAttempt, List<Long> coordinatorMeta, TridentCollector tridentCollector) {
+        List<List<Object>> batch;
 
-        if (batch == null) {
-            batch = new ArrayList<List<Object>>();
-            batch.add(new Values("apple"));
-            batch.add(new Values("ball"));
-            batch.add(new Values("cat"));
-            batch.add(new Values("dog"));
+        if (coordinatorMeta.get(0) < N) {
+            LOG.info("Emitting transaction [" + transactionAttempt.getTransactionId() + "] " + coordinatorMeta);
 
-            dataStore.put(transactionAttempt.getTransactionId(), batch);
-        }
+            if (coordinatorMeta.get(1) == 0L) {
+                batch = batchA;
+            } else {
+                batch = batchB;
+            }
 
-        LOG.info("Emitting transaction [" + transactionAttempt.getTransactionId() + "]");
-        for (List<Object> tuple : batch) {
-            tridentCollector.emit(tuple);
+            for (List<Object> tuple : batch) {
+                tridentCollector.emit(tuple);
+            }
         }
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -50,7 +58,6 @@ public class RWEmitter implements ITridentSpout.Emitter<Long>, Serializable {
 
     @Override
     public void success(TransactionAttempt transactionAttempt) {
-        dataStore.remove(transactionAttempt.getTransactionId());
     }
 
     @Override
