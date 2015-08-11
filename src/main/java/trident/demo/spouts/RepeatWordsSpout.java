@@ -1,20 +1,19 @@
 package trident.demo.spouts;
 
-import java.util.Map;
-
-import storm.trident.spout.ITridentSpout;
-import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.tuple.Fields;
+import storm.trident.spout.ITridentSpout;
 
-public class RepeatWordsSpout implements ITridentSpout<Long> {
+import java.util.List;
+import java.util.Map;
+
+public class RepeatWordsSpout implements ITridentSpout<List<Long>> {
     private static final long serialVersionUID = 1L;
-    SpoutOutputCollector collector;
-    BatchCoordinator<Long> coordinator = new RWBatchCoordinator();
-    Emitter<Long> emitter = new RWEmitter();
+    BatchCoordinator<List<Long>> coordinator = new RWBatchCoordinator();
+    Emitter<List<Long>> emitter = new RWEmitter();
 
     @Override
-    public Emitter<Long> getEmitter(String s, Map map, TopologyContext topologyContext) {
+    public Emitter<List<Long>> getEmitter(String s, Map map, TopologyContext topologyContext) {
         return emitter;
     }
 
@@ -29,7 +28,7 @@ public class RepeatWordsSpout implements ITridentSpout<Long> {
     }
 
     @Override
-    public BatchCoordinator<Long> getCoordinator(String s, Map map, TopologyContext topologyContext) {
+    public BatchCoordinator<List<Long>> getCoordinator(String s, Map map, TopologyContext topologyContext) {
         return coordinator;
     }
 }
