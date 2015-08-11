@@ -77,7 +77,7 @@
                 </descriptorRefs>
                 <archive>
                     <manifest>
-                        <mainClass>trident.demo.Demo3</mainClass>
+                        <mainClass>trident.demo.Demo</mainClass>
                     </manifest>
                 </archive>
             </configuration>

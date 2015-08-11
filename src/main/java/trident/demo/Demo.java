@@ -20,7 +20,7 @@ import backtype.storm.utils.Utils;
 import storm.trident.testing.Split;
 import trident.demo.spouts.RepeatWordsSpout;
 
-public class Demo3 {
+public class Demo {
 
     public static StormTopology buildTopology(StateFactory state) {
         TridentTopology topology = new TridentTopology();
