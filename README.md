@@ -118,7 +118,7 @@ First clone and build the `trident-redis` [4] repository before building this
 repository. `trident-redis` library implements a trident state on top of `redis`.
 This is required to store our state on redis.
 
-Then create a Uberjar of this repository by doing:
+Then create an Uberjar of this repository by doing:
 ```
 mvn clean package -Pcluster
 ```
