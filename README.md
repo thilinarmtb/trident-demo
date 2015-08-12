@@ -49,16 +49,28 @@ it and rename the extracted directory depending on the tasks you need
 that node to perform. Below is the folder structure of my cluster.
 
 ```
-    trident_cluster
-    ├── nimbus
-    ├── worker1
-    ├── worker2
-    ├── worker3
-    ├── worker4
-    └── zookeeper-3.4.6
+trident_cluster
+├── nimbus
+├── worker1
+├── worker2
+├── worker3
+├── worker4
+└── zookeeper-3.4.6
 ```
 
-I have additionally
+I have additionally added a zookeeper node as well. I am using zookeeper
+version 3.4.6. 
+
+Only difference (except the names of the directories) between `nimbus`,
+`worker1`, ... `worker4` is their configuration file `storm.yaml` found
+under `conf/` in each directory. I have listed below the configuration
+files I used for each of the nodes.
+
+[nimbus](https://gist.github.com/thilinarmtb/85980741bcd90c483827)
+[worker1](https://gist.github.com/thilinarmtb/2271b0eb9db5610dd636)
+[worker2](https://gist.github.com/thilinarmtb/015de16702e372d810f5)
+[worker3](https://gist.github.com/thilinarmtb/3264353b84cb2b66b9e7)
+[worker4](https://gist.github.com/thilinarmtb/396f660e5d52960228cd)
 
 ## References
 
