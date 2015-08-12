@@ -143,6 +143,8 @@ storm_worker4                    RUNNING    pid 7606, uptime 0:02:13
 zookeeper                        RUNNING    pid 7601, uptime 0:02:13
 ```
 
+Otherwise start the supervisor service. You can read more about this in [5].
+
 Then start the redis command line client by typing `redis-cli` in a terminal.
 We are going to monitor the keys stored in the redis server using the cli.
 Once you start a session using `redis-cli`, you can list the available
@@ -180,3 +182,5 @@ rmr /transactional
 [3] Redis Quick Start: http://redis.io/topics/quickstart
 
 [4] Trident redis: https://github.com/kstyrc/trident-redis
+
+[5] How To Install and Manage Supervisor on Ubuntu and Debian VPS: https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps
