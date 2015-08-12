@@ -1,13 +1,21 @@
 # Trident demonstrations
 
+## Introduction
+
 This repository contains a single trident topology and a DRPC Stream
-defined to query the state stored by the topology.
+defined on that topology. This topology is used to demonstrate two
+things: exactly once processing semantics and stateful processing of
+Trident.
 
-## Topology and DRPC Stream
+### Topology and DRPC Stream
 
-The topology simply reads a stream of words from a input spout and stores
-the count of each word in a redis which is a key-value cache and store.
+The topology simply reads a stream of words from a input spout
+(`RepeatWordsSpout()`) and stores the number of times each word was
+seen in a `redis` server which is a key-value cache and store. Read
+more about `redis` [here](http://redis.io/).
 
-The DRPC Stream reads the stored state and output the count of the words
-passed to the DRPC call.
+The DRPC Stream is defined to read the stored count for a set of words
+passed to it and return their count.
+
+## Setting up the environment
 
