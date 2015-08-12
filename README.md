@@ -8,9 +8,9 @@ things: exactly once processing semantics and stateful processing of
 Trident.
 
 I hope to demonstrate these features by running this topology in a
-locally created cluster. While the topology is running, we will kill
-all of the worker nodes and conclude that trident has exactly once
-semantics and stateful processing by looking at the final count stored
+locally created multi-node cluster. While the topology is running, we
+will kill all of the worker nodes and conclude that trident has exactly
+once semantics and stateful processing by looking at the final count stored
 in the redis server.
 
 To follow this tutorial I assume you know what Storm and Trident are
