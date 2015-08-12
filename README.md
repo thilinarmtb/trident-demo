@@ -22,7 +22,10 @@ and `supervisor` are.
 
 The topology simply reads a stream of words from a input spout and
 stores the number of times each word was seen in a `redis` server which
-is a key-value cache and store. Read more about `redis` in [1].
+is a key-value cache and store. Read more about `redis` in [1]. Input
+spout emits two batches. One batch contains the words 
+[`apple`, `ball`, `cat`, `dog`] and the other batch contains [`a`, `b`, `c`, `d`].
+Each batch is emitted 25 times by the spout.
 
 The DRPC Stream is defined to read the stored count for a set of words
 passed to it and return their count.
@@ -65,7 +68,7 @@ I have additionally added a zookeeper node as well. I am using zookeeper
 version 3.4.6. 
 
 Only difference (except the names of the directories) between `nimbus`,
-`worker1`,... `worker4` is their configuration file `storm.yaml` found
+`worker1`,`... worker4` is their configuration file `storm.yaml` found
 under `conf/` in each directory. I have listed below the configuration
 files I used for each of the nodes.
 
@@ -82,24 +85,91 @@ files I used for each of the nodes.
 ### Running the nodes under supervision
 
 It's really important to run our nodes under supervision. To do this,
-you need to install `supervisor` programme. Read more about this in
+you need to install `supervisor` program. Read more about this in
 [2]. Below are the configurations files I put under `/etc/supervisor/conf.d/`
 to set up the nodes to run under supervision. 
 
 [zookeeper.conf](https://gist.github.com/thilinarmtb/d2976be13a4092c8c548)
+
 [storm_drpc.conf](https://gist.github.com/thilinarmtb/6c18c0ae4ae5f2f83573)
+
 [storm_nimbus.conf](https://gist.github.com/thilinarmtb/6053827e08343242c875)
+
 [strom_worker1.conf](https://gist.github.com/thilinarmtb/9356bd752e8d68715121)
+
 [storm_worker2.conf](https://gist.github.com/thilinarmtb/f987e25544e1731a031c)
+
 [storm_worker3.conf](https://gist.github.com/thilinarmtb/317e0d09fa0361656caa)
+
 [storm_worker4.conf](https://gist.github.com/thilinarmtb/77b0b41f7e0ad216cdc4)
 
 Note that we need to run `zookeeper`, `nimbus`, `drpc` (since we are
-using DRPC queries) and a `supervisor` for each worker node.
+using DRPC queries) and a `supervisor` for each worker node. Make sure that
+you change the paths and the user in the configuration files according to your
+setup.
 
 ### Installing redis
 
 Follow the instructions found in [3] to install `redis` in your machine.
+
+## Building the Demonstration
+
+First clone and build the `trident-redis` [4] repository before building this
+repository. `trident-redis` library implements a trident state on top of `redis`.
+This is required to store our state on redis.
+
+Then create a Uberjar of this repository by doing:
+```
+mvn clean package -Pcluster
+```
+
+This will create a jar called `demo-1.0-SNAPSHOT-jar-with-dependencies.jar` under
+`target/` folder.
+
+## Running the Demonstration
+
+Finally, we can run the demonstration. To do this first we need to make sure
+that `supervisor` is started and our programmes are running under supervision.
+Enter the command `sudo supervisorctl status` in a terminal and you will see
+something like following if everything is okay.
+
+```
+storm_drpc                       RUNNING    pid 7600, uptime 0:02:13
+storm_nimbus                     RUNNING    pid 7602, uptime 0:02:13
+storm_worker1                    RUNNING    pid 7603, uptime 0:02:13
+storm_worker2                    RUNNING    pid 7605, uptime 0:02:13
+storm_worker3                    RUNNING    pid 7604, uptime 0:02:13
+storm_worker4                    RUNNING    pid 7606, uptime 0:02:13
+zookeeper                        RUNNING    pid 7601, uptime 0:02:13
+```
+
+Then start the redis command line client by typing `redis-cli` in a terminal.
+We are going to monitor the keys stored in the redis server using the cli.
+Once you start a session using `redis-cli`, you can list the available
+keys by typing `KEYS *` and get a value of a key by using `get`. Suppose
+I have a key called `apple`. If I want to see the value of it, then I can type
+`get apple` to get the value.
+
+Then in a new terminal window, change directories to the nimbus node (or any
+worker node) and submit the Uberjar to sotrm using the following command.
+```
+bin/storm jar <path_to_the_jar_we_created>/demo-1.0-SNAPSHOT-jar-with-dependencies.jar trident.demo.Demo demo
+```
+
+Now monitor the changes of the key-values using `KEYS *` and `get` command in
+the `redis-cli`.
+
+You can kil the worker nodes using `kill -9 <pid>` and observe the effect of
+killing them in the final result. You will note that our topology will have
+the same final state in `redis` irrespective of the killing of worker nodes.
+
+**Note**: When running the topology again and again, make sure to clear the zookeeper
+meta-data. You can do this by changing directories to the zookeeper node and doing
+the following:
+```
+bin/zkCli.sh -server 127.0.0.1:2181
+rmr /transactional
+```
 
 ## References
 
@@ -108,3 +178,5 @@ Follow the instructions found in [3] to install `redis` in your machine.
 [2] Running a Multi-Node Storm Cluster: http://www.michael-noll.com/tutorials/running-multi-node-storm-cluster/
 
 [3] Redis Quick Start: http://redis.io/topics/quickstart
+
+[4] Trident redis: https://github.com/kstyrc/trident-redis
