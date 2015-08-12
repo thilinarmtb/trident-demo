@@ -110,7 +110,7 @@ setup.
 
 ### Installing redis
 
-Follow the instructions found in [3] to install `redis` in your machine.
+Follow the instructions found in [3] or [6] to install `redis` in your machine.
 
 ## Building the Demonstration
 
@@ -145,6 +145,7 @@ zookeeper                        RUNNING    pid 7601, uptime 0:02:13
 
 Otherwise start the supervisor service. You can read more about this in [5].
 
+Follow the instructions in [6] to get the redis service started in your machine.
 Then start the redis command line client by typing `redis-cli` in a terminal.
 We are going to monitor the keys stored in the redis server using the cli.
 Once you start a session using `redis-cli`, you can list the available
@@ -184,3 +185,5 @@ rmr /transactional
 [4] Trident redis: https://github.com/kstyrc/trident-redis
 
 [5] How To Install and Manage Supervisor on Ubuntu and Debian VPS: https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps
+
+[6] How To Install and Use Redis: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-redis
