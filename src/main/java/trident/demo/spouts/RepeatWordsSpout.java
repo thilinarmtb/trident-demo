@@ -7,6 +7,9 @@ import storm.trident.spout.ITridentSpout;
 import java.util.List;
 import java.util.Map;
 
+// Spout class with the Emitter and Coordinator we created. Read more about the interface
+// in the following link:
+// https://github.com/apache/storm/blob/master/storm-core/src/jvm/storm/trident/spout/ITridentSpout.java
 public class RepeatWordsSpout implements ITridentSpout<List<Long>> {
     private static final long serialVersionUID = 1L;
     BatchCoordinator<List<Long>> coordinator = new RWBatchCoordinator();
