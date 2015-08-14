@@ -162,7 +162,7 @@ bin/storm jar <path_to_the_jar_we_created>/demo-1.0-SNAPSHOT-jar-with-dependenci
 Now monitor the changes of the key-values using `KEYS *` and `get` command in
 the `redis-cli`.
 
-You can kil the worker nodes using `kill -9 <pid>` and observe the effect of
+You can kill the worker nodes using `kill -9 <pid>` and observe the effect of
 killing them in the final result. You will note that our topology will have
 the same final state in `redis` irrespective of the killing of worker nodes.
 
